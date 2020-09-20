@@ -1,0 +1,178 @@
+{% extends "base/base.htm" %}
+{% block content %}
+    
+    <style> 
+
+        /* ****** */
+        .content-table {
+            text-align: center;
+            /* width: 100%; */
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden; 
+            /* min-width: 400px; */
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);
+        }
+        .content-table thead tr{
+            background-color: #3b3b3b;
+            color: #ffffff;
+            text-align: center;
+        }
+        .content-table th,
+        .content-table td{
+            border: 2.5px solid black;
+            padding: 12px 30px;
+        } 
+        .content-table tbody tr:nth-of-type(even){
+            background-color: rgb(73, 73, 73);
+            color: white;
+        }
+        .content-table tbody tr:nth-of-type(odd){
+            background-color: rgb(202, 202, 202);
+            /* color: white; */
+        }
+        a{
+            color: white;
+        }
+        a:hover{
+            color: rgb(2, 1, 1);
+        }
+        
+    </style>
+    <center>
+        <select style="padding: 8px 100px; margin: 20px 0;">
+            <option >Choose Contest</option>
+            <option value="Div_1">Div_1</option>
+            <option value="Div_2">Div_2</option>
+            <option value="Div_3">Div_3</option>
+            <option value="Educational">Educational</option>
+        </select>
+            <div class="Div_1 box">
+                <h1 style="color: rgb(65, 62, 62)">All Div-1 Contests</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Contest Name</th>
+                            <th>Total Problems</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        {% for x in myobjectForDiv_1Contests %}
+                        <tr>
+                            <td>
+                                <a href="http://codeforces.com/contest/{{x.contestId}}" >{{x.contestName}}</a>
+                            </td>
+                            <td>
+                                {{x.problemList}}
+                            </td>
+                        </tr>
+                        
+                    {% endfor %}           
+                    </tbody>
+                    
+                </table>        
+            </div>
+            <div class="Div_2 box">
+                <h1 style="color: rgb(65, 62, 62)">All Div-2 Contests</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Contest Name</th>
+                            <th>Total Problems</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        {% for x in myobjectForDiv_2Contests %}
+                        <tr>
+                            <td>
+                                <a href="http://codeforces.com/contest/{{x.contestId}}" >{{x.contestName}}</a>
+                            </td>
+                            <td>
+                                {{x.problemList}}
+                            </td>
+                        </tr>
+                        
+                    {% endfor %}           
+                    </tbody>
+                    
+                </table>
+            </div>
+            <div class="Div_3 box">
+                <h1 style="color: rgb(65, 62, 62)">All Div-3 Contests</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Contest Name</th>
+                            <th>Total Problems</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        {% for x in myobjectForDiv_3Contests %}
+                        <tr>
+                            <td>
+                                <a href="http://codeforces.com/contest/{{x.contestId}}" >{{x.contestName}}</a>
+                            </td>
+                            <td>
+                                {{x.problemList}}
+                            </td>
+                        </tr>
+                        
+                    {% endfor %}           
+                    </tbody>
+                    
+                </table>
+            </div>
+            <div class="Educational box">
+                <h1 style="color: rgb(65, 62, 62)">All Educational Contests</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Contest Name</th>
+                            <th>Total Problems</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        {% for x in myobjectForEducationalContests %}
+                        <tr>
+                            <td>
+                                <a href="http://codeforces.com/contest/{{x.contestId}}" >{{x.contestName}}</a>
+                            </td>
+                            <td>
+                                {{x.problemList}}
+                            </td>
+                        </tr>
+                        
+                    {% endfor %}           
+                    </tbody>
+                    
+                </table>
+            </div>
+        <br>
+        <a href="/refreshContests" class="btn btn-primary"> Refresh Contest </a>
+    </center>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("select").change(function(){
+            $(this).find("option:selected").each(function(){
+                var optionValue = $(this).attr("value");
+                if(optionValue){
+                    $(".box").not("." + optionValue).hide();
+                    $("." + optionValue).show();
+                } else{
+                    $(".box").hide();
+                }
+            });
+        }).change();
+    });
+    </script>
+
+{% endblock content %}

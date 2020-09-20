@@ -1,0 +1,18 @@
+{% extends "base/base.htm" %}
+{% block content %}
+    <div style="text-align:center; width: 100%;">
+        <h1> {{request.user}} </h1>
+        <h3> Enter user handle </h3>
+        <center>
+            <form method="POST" style='width: 40%;'>
+                {% csrf_token %} 
+                    <div id="user-handle" style="margin-bottom: 10px;">
+                        <input type="text" name="userHandle" class="form-control">
+                    </div>
+                <button type="submit" class="btn-success" style="margin-top: 5px; padding: 5px 80px 5px 80px; background-color: #4e4e4e; border-width: 0px">Submit</button>
+            </form>
+        </center>    
+        
+    </div>
+    
+{% endblock content %}    

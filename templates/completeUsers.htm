@@ -1,0 +1,116 @@
+{% extends "base/base.htm" %}
+{% block content %}
+    
+    <canvas id="allUsersChart" style="padding-bottom: 5%;"></canvas>
+    <!-- {% for x in myobject %}
+        <h1> <strong>{{x.rank}}</strong> is having count as <strong>{{x.rankCount}}</strong> </h1>
+    {% endfor %}  -->
+    <div style="text-align:center; margin-bottom:30px;">
+        <a href="/refreshUsers" class="btn btn-danger">refresh</a>
+    </div>
+    <canvas id="allUsersChartWide"></canvas>  
+    <script> 
+        const rating_map_wide = JSON.parse('{{completeUsersDataObject|escapejs}}');   
+        const ourRatingMap    = JSON.parse('{{completeUsersRatingObject|escapejs}}'); 
+
+        let ctx = document.getElementById('allUsersChart').getContext('2d');
+        let allUsersPlot = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets:
+                    [ 
+                        {
+                            label: 'rating based',
+                            borderWidth: 0.25,
+                            barThickness: 7,
+                            hoverBorderColor: 'rgb(0, 0, 0)',
+                            hoverBorderWidth: 1.5 ,
+                            hoverBackgroundColor: 'rgb(74, 25, 250)',
+                            backgroundColor: [],
+                            borderColor: 'rgba(0, 0, 0,0.6)',
+                            data: []
+                        }
+
+                    ]
+
+            },
+            options: {
+            }
+        });
+        let ctx1 = document.getElementById('allUsersChartWide').getContext('2d');
+        let allUsersWidePlot = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets:
+                    [ 
+                        {
+                            label: 'rank based',
+                            borderWidth: 0.25,
+                            barThickness: 7,
+                            hoverBorderColor: 'rgb(0, 0, 0)',
+                            hoverBorderWidth: 3,
+                            hoverBackgroundColor: 'rgb(74, 25, 250)',
+                            backgroundColor: [],
+                            borderColor: 'rgba(0, 0, 0,0.6)',
+                            data: []
+                        }
+
+                    ]
+
+            },
+            options: {
+            }
+        });
+        
+        insertData();
+        function insertData(){  
+             
+            addData(allUsersWidePlot,'newbie','#BAB5AB',rating_map_wide['newbie']);
+            addData(allUsersWidePlot,'pupil','#7FFF7F',rating_map_wide['pupil']);
+            addData(allUsersWidePlot,'specialist','#69FCF3',rating_map_wide['specialist']);
+            addData(allUsersWidePlot,'expert','#337DFF',rating_map_wide['expert']);
+            addData(allUsersWidePlot,'candidate master','#FF66FF',rating_map_wide['candidate master']);
+            addData(allUsersWidePlot,'master','rgb(255, 153, 0)',rating_map_wide['master']);
+            addData(allUsersWidePlot,'international master','#FFA333',rating_map_wide['international master']);
+            addData(allUsersWidePlot,'grandmaster','#FF3333',rating_map_wide['grandmaster']);
+            addData(allUsersWidePlot,'international grandmaster','rgb(255,8,0)',rating_map_wide['international grandmaster']);
+            addData(allUsersWidePlot,'legendary grandmaster','rgb(90, 14, 14)',rating_map_wide['legendary grandmaster']);
+            for ( key in ourRatingMap) { 
+                addData(allUsersPlot,key*100,getColor(key),ourRatingMap[key]);
+            }
+        } 
+        function getColor( parameter){
+            if(parameter < 12)
+                return '#BAB5AB' ;
+            if(parameter < 14)
+                return '#7FFF7F' ;
+            if(parameter < 16)
+                return '#69FCF3' ;
+            if(parameter < 19)
+                return '#337DFF' ;
+            if(parameter < 21)
+                return '#FF66FF' ;
+            if(parameter < 23)
+                return '#FFA333' ;
+            if(parameter < 24)
+                return 'rgb(255,133,0)' ;
+            if(parameter < 26)
+                return '#FF3333' ;
+            if(parameter < 30)
+                return 'rgb(255,8,0)' ;
+            return 'rgb(90, 14, 14)';
+        }
+        
+        function addData(chart, label, color, data) {
+            console.log(data, "present in blah")
+            console.log(chart)
+            chart.data.datasets[0].data.push(data);
+            chart.data.labels.push(label);
+            chart.data.datasets[0].backgroundColor.push(color);   
+            chart.update();
+        }             
+    </script>
+{% endblock content %}    
+ 

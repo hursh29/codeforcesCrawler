@@ -1,0 +1,195 @@
+{% extends "base/base.htm" %}
+{% block content %}
+
+    <h1> hey there {{ userHandle }}</h1>
+    <div class="card flex-row flex-wrap">
+        <div class="card-header border-1">
+            <img src={{ imageUrl }} alt="" width="300px" height="300px">
+        </div>
+        <div class="card-block px-2">
+            <h2 class="card-title"> <strong><span id="rank">{{firstName}} {{lastName}}</span></strong> </h2>
+            <h5 class="card-title"> From {{ city }}, {{ country }} </h5>
+            <h5 class="card-title"> Current Rating: {{rating}} </h5>
+            <h5 class="card-title"> Rank: <strong><span id="rank">{{rank}}</span></strong> </h5>
+            <h5 class="card-title"> Friends : {{ friends }} </h5>
+            <h5 class="card-title"> Organization : {{ organization }} </h5>
+        </div>  
+    </div>
+    
+    <h1 > Your Performance </h1>
+    
+    <canvas id="tagsChartBar"></canvas>
+    <center style="margin-bottom: 40px;">
+        <h4>
+            Tags Based Barchart
+        </h4>
+    </center>
+    <div id="content">
+
+        <div id="left" style="height: 400px;  width: 50%; float: left;">
+            <canvas id="tagsChartDoughNut"></canvas>  
+            <center>
+                <h4>
+                    Problem Tags Distribution
+                </h4>
+            </center>              
+        </div> 
+
+        <div id="right" style="height: 400px;  width: 50%; float: right;">
+            <canvas id="verdictsChartDoughNut"></canvas>            
+            <center>
+                <h4>
+                    Problem Verdicts Distribution
+                </h4>
+            </center>
+        </div>  
+    </div>  
+     
+<script>  
+    let userRating = parseInt('{{rating|escapejs}}') 
+     
+    const tags = JSON.parse('{{tags|escapejs}}');
+    const verdicts = JSON.parse('{{verdicts|escapejs}}');
+    insertData();
+    function insertData() {
+        var ctx = document.getElementById('tagsChartBar').getContext('2d');
+        var tagsChartBar = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets:
+                    [
+                        {
+                            label: 'tags based',
+                            borderWidth: 2.5,
+                            barThickness: 7,
+                            hoverBorderColor: 'rgb(0, 0, 0)',
+                            hoverBorderWidth: 1.5,
+                            hoverBackgroundColor: 'rgb(74, 25, 250)',
+                            backgroundColor: [],
+                            borderColor: 'rgb(194, 191, 0)',
+                            data: []
+                        }
+
+                    ]
+
+            }
+        });
+        var ctX = document.getElementById('tagsChartDoughNut').getContext('2d');
+        var tagsChartDoughNut = new Chart(ctX, {
+            type: 'doughnut',
+            data: {
+                labels: [],
+                datasets:
+                    [
+                        {
+                            label: 'tags based doughnut form',
+                            borderWidth: 0.8,
+                            barThickness: 7,
+                            hoverBorderColor: 'rgb(0, 0, 0)',
+                            hoverBorderWidth: 1.5,
+                            hoverBackgroundColor: 'rgb(74, 25, 250)',
+                            backgroundColor: [],
+                            borderColor: 'rgb(255, 255, 255)',
+                            data: []
+                        }
+
+                    ]
+
+            },
+            options: {
+                legend: {
+                    display: false
+                }
+            }
+        });
+        var cTX = document.getElementById('verdictsChartDoughNut').getContext('2d');
+        var verdictsChartDoughNut = new Chart(cTX, {
+            type: 'doughnut',
+            data: {
+                labels: [],
+                datasets:
+                    [
+                        {
+                            label: 'verdicts based',
+                            borderWidth: 5,
+                            barThickness: 7,
+                            hoverBorderColor: 'rgb(0, 0, 0)',
+                            hoverBorderWidth: 1.5,
+                            hoverBackgroundColor: 'rgb(255, 230, 0)',
+                            backgroundColor: [],
+                            borderColor: 'rgb(255, 255, 255)',
+                            data: []
+                        }
+
+                    ]
+
+            },
+            options: {
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+
+        for (const key in tags) { 
+            addData(tagsChartBar, key, 'rgb(244, 255, 87)', tags[key]);
+            addData(tagsChartDoughNut, key, getRandomColor(), tags[key]);
+        }
+        for (const key in verdicts) {
+            addData(verdictsChartDoughNut, convert(key), getConvertColor(key), verdicts[key]);
+        }
+    } 
+    document.querySelector('#rank').style.color = getColor(Math.floor(userRating/100));
+    function getConvertColor(key){
+        if (key == "OK")
+            return '#00FF00';
+        if (key == "WRONG_ANSWER")
+            return '#FF0000'; 
+        if (key == "TIME_LIMIT_EXCEEDED")
+            return '#000FFF'; 
+        return getRandomColor() ;
+    }
+    function convert(key) {
+        if (key == "OK")
+            return "Accepted"; 
+        return key ;
+    }
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    function addData(chart, label, color, data) {
+        chart.data.datasets[0].data.push(data);
+        chart.data.labels.push(label);
+        chart.data.datasets[0].backgroundColor.push(color);
+        chart.update();
+    }         
+    function getColor( parameter){
+            if(parameter < 12)
+                return '#BAB5AB' ;
+            if(parameter < 14)
+                return '#7FFF7F' ;
+            if(parameter < 16)
+                return '#69FCF3' ;
+            if(parameter < 19)
+                return '#337DFF' ;
+            if(parameter < 21)
+                return '#FF66FF' ;
+            if(parameter < 23)
+                return '#FFA333' ;
+            if(parameter < 24)
+                return 'rgb(255,133,0)' ;
+            if(parameter < 26)
+                return '#FF3333' ;
+            if(parameter < 30)
+                return 'rgb(255,8,0)' ;
+            return 'rgb(90, 14, 14)';
+        }                                           
+</script>
+{% endblock content %}    
